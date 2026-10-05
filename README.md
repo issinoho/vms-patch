@@ -22,12 +22,14 @@ compile and link test sent to VSI C on the node, and MMS builds the result.
 
 ## Status
 
+**Released: [v2.8-vms1](https://github.com/issinoho/vms-patch/releases/tag/v2.8-vms1).**
+
 | | IA64 (OpenVMS V8.4-2L3, VSI C 7.4) | x86-64 (OpenVMS E9.2-4, VSI C 7.7) |
 |---|---|---|
-| VSI C configure answers | yes | @X86_CFG@ |
-| Builds | yes | @X86_BUILD@ |
-| Smoke test: unified and context diffs, `-R`, `-b` backups, `--dry-run`, a failing hunk (error status and `.rej`), `-p1` into a subdirectory, a missing patch file | 8/8 | @X86_SMOKE@ |
-| Kit install, smoke test on the installed image, remove | pending | pending |
+| VSI C configure answers (identical on both) | yes | yes |
+| Builds | yes | yes |
+| Smoke test: unified and context diffs, `-R`, `-b` backups, `--dry-run`, a failing hunk (error status and `.rej`), `-p1` into a subdirectory, a missing patch file | 8/8 | 8/8 |
+| Kit install, smoke test on the installed image, remove | clean | clean |
 | PCSI kit (`PATCH`, `V2.8-0E1`) | `ISSINOHO-I64VMS-PATCH-V0208-0E1-1.PCSI` | `ISSINOHO-X86VMS-PATCH-V0208-0E1-1.PCSI` |
 
 ## Installing the kit
@@ -116,8 +118,8 @@ The family of ports, all for IA64 and x86-64, each following its upstream releas
 | GNU Bison — [vms-bison](https://github.com/issinoho/vms-bison) | [v3.8.2-vms2](https://github.com/issinoho/vms-bison/releases/tag/v3.8.2-vms2) | the parser generator |
 | flex — [vms-flex](https://github.com/issinoho/vms-flex) | [v2.6.4-vms1](https://github.com/issinoho/vms-flex/releases/tag/v2.6.4-vms1) | the scanner generator; runs GNU m4 |
 | GNU make — [vms-make](https://github.com/issinoho/vms-make) | [v4.4.1-vms1](https://github.com/issinoho/vms-make/releases/tag/v4.4.1-vms1) | built with make's own VMS port |
-| GNU diffutils — [vms-diffutils](https://github.com/issinoho/vms-diffutils) | not yet released | cmp, diff, diff3, sdiff |
-| **GNU patch** (this port) — [vms-patch](https://github.com/issinoho/vms-patch) | not yet released | applies diffs |
+| GNU diffutils — [vms-diffutils](https://github.com/issinoho/vms-diffutils) | [v3.12-vms1](https://github.com/issinoho/vms-diffutils/releases/tag/v3.12-vms1) | cmp, diff, diff3, sdiff |
+| **GNU patch** (this port) — [vms-patch](https://github.com/issinoho/vms-patch) | [v2.8-vms1](https://github.com/issinoho/vms-patch/releases/tag/v2.8-vms1) | applies diffs |
 
 ## Artwork
 
