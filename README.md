@@ -27,7 +27,7 @@ compile and link test sent to VSI C on the node, and MMS builds the result.
 | VSI C configure answers | yes | @X86_CFG@ |
 | Builds | yes | @X86_BUILD@ |
 | Smoke test: unified and context diffs, `-R`, `-b` backups, `--dry-run`, a failing hunk (error status and `.rej`), `-p1` into a subdirectory, a missing patch file | 8/8 | @X86_SMOKE@ |
-| Kit install, smoke test on the installed image, remove | @IA64_IC@ | @X86_IC@ |
+| Kit install, smoke test on the installed image, remove | pending | pending |
 | PCSI kit (`PATCH`, `V2.8-0E1`) | `ISSINOHO-I64VMS-PATCH-V0208-0E1-1.PCSI` | `ISSINOHO-X86VMS-PATCH-V0208-0E1-1.PCSI` |
 
 ## Installing the kit
