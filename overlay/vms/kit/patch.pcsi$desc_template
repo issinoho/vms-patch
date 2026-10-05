@@ -1,0 +1,30 @@
+--
+-- PCSI product description for GNU patch on OpenVMS.
+-- Template: tools/prepare.sh substitutes @PRODUCER@, @BASE@ and @PCSIVERSION@.
+--
+product @PRODUCER@ @BASE@ PATCH @PCSIVERSION@ full ;
+
+    information RELEASE_NOTES phase after ;
+
+    directory [PATCH] ;
+    directory [PATCH.BIN] ;
+    directory [PATCH.DOC] ;
+
+    file [PATCH.BIN]PATCH.EXE ;
+    file [SYS$STARTUP]PATCH$STARTUP.COM ;
+    file [PATCH]PATCH$SETUP.COM ;
+    file [PATCH.DOC]README.VMS ;
+    file [PATCH.DOC]COPYING. ;
+    file [PATCH.DOC]NEWS. ;
+    file [PATCH.DOC]PATCH.TXT ;
+    file [PATCH.DOC]PATCH.1 ;
+
+    -- Define PATCH$ROOT now and print the post-installation tasks (PCSI shows
+    -- only the title of an information message unless /HELP is given).
+    execute postinstall "@PCSI$DESTINATION:[SYS$STARTUP]PATCH$STARTUP.COM INSTALL" interactive ;
+    -- On removal, deassign PATCH$ROOT.
+    execute install "CONTINUE" remove "@PCSI$DESTINATION:[SYS$STARTUP]PATCH$STARTUP.COM REMOVE" ;
+
+    information POST_INSTALL phase after ;
+
+end product ;

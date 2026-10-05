@@ -128,11 +128,10 @@ python3 "$top/tools/gen_mms.py" "$cfgdir/ccflags.txt" "$hostcfg/lib-sources.txt"
     "$hostcfg/src-sources.txt" "$top/overlay/vms/extra-sources.txt" > "$stage/vms/sources.mms"
 
 # --- PCSI kit inputs (vms/kit/MAKE_KIT.COM builds the kit on each node) ----
-[ -d "$stage/vms/kit" ] && {
 step "PCSI kit inputs"
 : "${KIT_PRODUCER:=ISSINOHO}"
-# Three-part versions (1.25.0): the third part is the PCSI update and our VMS
-# patch level the ECO, as in vms-awk and vms-curl, so 1.4.21-vms1 is V1.4-21E1.
+# Two-part versions (2.8): no PCSI update; our VMS patch level is the ECO,
+# so 2.8-vms1 is V2.8-0E1.
 IFS=. read -r major minor update _ <<< "$UPSTREAM_VERSION"
 pcsiversion="V$major.$minor-${update:-0}E$VMS_PATCH_LEVEL"
 kitversion="$UPSTREAM_VERSION-vms$VMS_PATCH_LEVEL"
@@ -143,25 +142,22 @@ subst() {
         -e "s/@KITVERSION@/$kitversion/g" -e "s/@ARCH@/$2/g"
 }
 for base in I64VMS X86VMS; do
-    subst $base "" < "$kit/m4.pcsi\$desc_template" > "$kit/M4-$base.PCSI\$DESC"
-    subst $base "" < "$kit/m4.pcsi\$text_template" > "$kit/M4-$base.PCSI\$TEXT"
+    subst $base "" < "$kit/patch.pcsi\$desc_template" > "$kit/PATCH-$base.PCSI\$DESC"
+    subst $base "" < "$kit/patch.pcsi\$text_template" > "$kit/PATCH-$base.PCSI\$TEXT"
 done
-rm -f "$kit/m4.pcsi\$desc_template" "$kit/m4.pcsi\$text_template"
-mv "$kit/m4\$startup.com" "$kit/M4\$STARTUP.COM"
-mv "$kit/m4\$setup.com" "$kit/M4\$SETUP.COM"
+rm -f "$kit/patch.pcsi\$desc_template" "$kit/patch.pcsi\$text_template"
+mv "$kit/patch\$startup.com" "$kit/PATCH\$STARTUP.COM"
+mv "$kit/patch\$setup.com" "$kit/PATCH\$SETUP.COM"
 subst "" "IA64 and x86-64" < "$kit/readme.vms" > "$kit/README.VMS"; rm -f "$kit/readme.vms"
 mkdir -p "$kit/doc"
 cp "$stage/COPYING" "$kit/doc/COPYING."
 cp "$stage/NEWS" "$kit/doc/NEWS."
-cp "$stage/doc/m4.1" "$kit/doc/M4.1"
-# The manual: doc/m4.info-1 and -2 are plain text apart from Info's control
-# lines (no makeinfo needed on the host).
-cat "$stage/doc/m4.info-1" "$stage/doc/m4.info-2" |
-    sed -e '/^\x1f/d' -e '/^Tag Table:/,$d' -e 's/\x7f[0-9]*//' |
-    tr -d '\000-\010\016-\037\177' > "$kit/doc/M4.TXT"
+cp "$stage/patch.man" "$kit/doc/PATCH.1"
+# The manual page as plain text (patch has no Info manual).
+groff -man -Tascii -P-cbou "$stage/patch.man" > "$kit/doc/PATCH.TXT" 2>/dev/null
+[ -s "$kit/doc/PATCH.TXT" ] || die "groff did not render patch.man"
 printf 'KIT_PRODUCER=%s\nPCSI_VERSION=%s\nKIT_VERSION=%s\n' "$KIT_PRODUCER" "$pcsiversion" \
     "$kitversion" > "$kit/kit.env"
-}
 
 # --- snapshot: the resolved configuration, committed and reviewed ----------
 mkdir -p "$snapshot"
