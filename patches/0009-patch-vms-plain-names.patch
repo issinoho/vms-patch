@@ -1,0 +1,36 @@
+Subject: src/patch.c: on OpenVMS, plain file names and the name "patch"
+
+safe.c walks every file name through directory descriptors (openat(),
+fchmodat(), ...), a defence against symbolic-link races.  On VMS those
+are gnulib's emulation over open() of a directory, and setting the mode of
+the patched temporary file failed with ENOENT, so patch -p1 into a
+subdirectory stopped before renaming it.  Set unsafe, as patch already
+does for a file named on the command line: plain file names, while
+name_is_valid() still rejects absolute names and "..".
+
+argv[0] is the image's file specification on VMS, which patch printed in
+every message ("/DISK$USER/.../PATCH.EXE: ..."); call it "patch".
+
+--- a/src/patch.c	2026-10-05 07:41:51.774290477 +0100
++++ b/src/patch.c	2026-10-05 07:41:51.789807869 +0100
+@@ -160,7 +160,20 @@
+     bool have_git_diff = false;
+ 
+     exit_failure = EXIT_TROUBLE;
++#ifdef __VMS
++    /* argv[0] is the image's file specification; call it "patch" in
++       messages.  */
++    set_program_name ("patch");
++    /* safe.c walks each file name through directory descriptors (openat()
++       and friends), a defence against symbolic-link races; on VMS they are
++       gnulib's emulation, through which setting the mode of the output file
++       failed (ENOENT).  Use plain file names, as patch does for a file
++       named on the command line; name_is_valid() still rejects absolute
++       names and "..".  */
++    unsafe = true;
++#else
+     set_program_name (argv[0]);
++#endif
+     init_time ();
+ 
+     xstdopen ();

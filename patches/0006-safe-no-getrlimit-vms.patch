@@ -1,0 +1,40 @@
+Subject: src/safe.c: on OpenVMS, size the directory cache without getrlimit()
+
+safe.c sizes its cache of open directory descriptors from getrlimit
+(RLIMIT_NOFILE).  OpenVMS has no getrlimit() and no rlim_t (the
+open-file limit is the process's FILLM quota), so safe.c did not compile.
+On VMS keep the cache at four times its minimum size.
+
+--- a/src/safe.c	2026-10-05 07:34:32.969880929 +0100
++++ b/src/safe.c	2026-10-05 07:35:24.128814568 +0100
+@@ -73,6 +73,12 @@
+ };
+ 
+ static Hash_table *cached_dirfds;
++#ifdef __VMS
++/* No getrlimit() or rlim_t on VMS: the open-file limit is the process's
++   FILLM quota; keep the cache at its minimum size plus a margin.  */
++typedef unsigned long rlim_t;
++# define RLIM_INFINITY ((rlim_t) -1)
++#endif
+ static rlim_t min_cached_fds = 8;
+ static rlim_t max_cached_fds;
+ static LIST_HEAD (lru_list);
+@@ -103,6 +109,9 @@
+ 
+ static void init_dirfd_cache (void)
+ {
++#ifdef __VMS
++  max_cached_fds = 4 * min_cached_fds;
++#else
+   struct rlimit nofile;
+ 
+   if (getrlimit (RLIMIT_NOFILE, &nofile) == 0)
+@@ -114,6 +123,7 @@
+     }
+   else
+     max_cached_fds = min_cached_fds;
++#endif
+ 
+   cached_dirfds = hash_initialize (min_cached_fds, nullptr,
+ 				   hash_cached_dirfd,

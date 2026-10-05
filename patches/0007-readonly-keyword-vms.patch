@@ -1,0 +1,21 @@
+Subject: src/common.h: on OpenVMS, readonly is a keyword
+
+VSI C keeps VAX C's readonly storage class as a keyword, so pch.c and
+util.c, which use readonly as a variable and parameter name, did not
+compile (%CC-E-DECLARATOR).  Rename it on VMS.
+
+--- a/src/common.h	2026-10-05 07:34:32.970888948 +0100
++++ b/src/common.h	2026-10-05 07:34:32.992059390 +0100
+@@ -43,6 +43,12 @@
+ #include <time.h>
+ #include <unistd.h>
+ 
++#ifdef __VMS
++/* readonly is a VSI C keyword (a storage class from VAX C); pch.c and
++   util.c use it as an identifier.  */
++# define readonly patch_readonly
++#endif
++
+ /* handy definitions */
+ 
+ #define strEQ(s1,s2) (!strcmp(s1, s2))
