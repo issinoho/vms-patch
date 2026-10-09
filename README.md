@@ -4,7 +4,9 @@
 
 # GNU patch for OpenVMS
 
+[![Release](https://img.shields.io/github/v/release/issinoho/vms-patch?label=release)](https://github.com/issinoho/vms-patch/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/issinoho/vms-patch/total?label=downloads)](https://github.com/issinoho/vms-patch/releases)
+![OpenVMS](https://img.shields.io/badge/OpenVMS-IA64%20%7C%20x86--64-blue)
 
 [GNU patch](https://www.gnu.org/software/patch/) (**2.8**), which applies a diff to the original
 files, built natively for OpenVMS on **IA64** and **x86-64**, following patch's own releases.
