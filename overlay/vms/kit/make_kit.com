@@ -45,6 +45,7 @@ $ if f$search("''out'*.PCSI;*") .nes. "" then delete/nolog 'out'*.PCSI;*
 $ if f$search("''mat'*.*;*") .nes. "" then delete/nolog 'mat'*.*;*
 $ copy/nolog 'image' 'mat'PATCH.EXE
 $ copy/nolog [.VMS.KIT]PATCH$STARTUP.COM,PATCH$SETUP.COM,README.VMS 'mat'
+$ if base .eqs. "AXPVMS" then copy/nolog [.VMS.KIT]README_AXPVMS.VMS 'mat'README.VMS
 $ copy/nolog [.VMS.KIT.DOC]*.* 'mat'
 $ matspec = f$parse(mat,,,"DEVICE","NO_CONCEAL") + f$parse(mat,,,"DIRECTORY","NO_CONCEAL")
 $!

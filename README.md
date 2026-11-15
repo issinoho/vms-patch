@@ -6,11 +6,11 @@
 
 [![Release](https://img.shields.io/github/v/release/issinoho/vms-patch?label=release)](https://github.com/issinoho/vms-patch/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/issinoho/vms-patch/total?label=downloads)](https://github.com/issinoho/vms-patch/releases)
-![OpenVMS](https://img.shields.io/badge/OpenVMS-IA64%20%7C%20x86--64-blue)
+![OpenVMS](https://img.shields.io/badge/OpenVMS-IA64%20%7C%20x86--64%20%7C%20Alpha-blue)
 [![License](https://img.shields.io/github/license/issinoho/vms-patch)](COPYING)
 
 [GNU patch](https://www.gnu.org/software/patch/) (**2.8**), which applies a diff to the original
-files, built natively for OpenVMS on **IA64** and **x86-64**, following patch's own releases.
+files, built natively for OpenVMS on **IA64**, **x86-64** and **Alpha**, following patch's own releases.
 [GNU diffutils for OpenVMS](https://github.com/issinoho/vms-diffutils) makes the diffs. It belongs
 to the same family as [GNU grep](https://github.com/issinoho/vms-grep),
 [GNU sed](https://github.com/issinoho/vms-sed), [GNU awk](https://github.com/issinoho/vms-awk),
@@ -39,6 +39,23 @@ compile and link test sent to VSI C on the node, and MMS builds the result.
 | Smoke test: unified and context diffs, `-R`, `-b` backups, `--dry-run`, a failing hunk (error status and `.rej`), `-p1` into a subdirectory, a missing patch file | 8/8 | 8/8 |
 | Kit install, smoke test on the installed image, remove | clean | clean |
 | PCSI kit (`PATCH`, `V2.8-0E1`) | `ISSINOHO-I64VMS-PATCH-V0208-0E1-1.PCSI` | `ISSINOHO-X86VMS-PATCH-V0208-0E1-1.PCSI` |
+
+**Alpha (v2.8-vms2, a dedicated Alpha release; IA64 and x86-64 stay on vms1):** built on
+OpenVMS Alpha V8.4-2L2 with VSI C V7.4-002 (86 `%CC-I-QUESTCOMPARE` and 2 `QUESTCOMPARE1`
+informational messages; 8 `%CC-W-UNSUPCONVSPEC` warnings: the compiler says the C RTL does not
+fully support `%td`, which patch uses for line numbers in hunk headers, and a probe and a failing
+normal-diff hunk printed them correctly; one `%CC-W-INTOVERFL` in gnulib's date parser, a
+constant in an overflow check, whose results a probe checked at the limits); DCL smoke test 8/8;
+kit `ISSINOHO-AXPVMS-PATCH-V0208-0E2-1.PCSI`. The Alpha shares the IA64-derived `config.h`,
+checked by compiling, linking and preprocessing all 376 test programs of the IA64 configure run
+on the node (same verdict for every one) plus a run-time probe; see
+`overlay/vms/config/vms-manual.site`. patch's own test suite needs GNV, which the Alpha node
+does not have, so only the smoke test runs there.
+
+**Requirements:** OpenVMS IA64, x86-64 or Alpha with VSI C and MMS (tested on IA64 V8.4-2L3
+with VSI C 7.4, x86-64 E9.2-4 with VSI C 7.7, and Alpha V8.4-2L2 with VSI C V7.4-002). On the
+host: git, bash, python3, gcc and make, curl, gpg, groff, and ssh/sftp for the automated route.
+GNV for patch's own test suite (not available on the Alpha node).
 
 ## Installing the kit
 
@@ -98,9 +115,9 @@ Set up `tools/nodes.conf` as described in
 ```sh
 git clone https://github.com/issinoho/vms-patch.git
 cd vms-patch
-tools/vms_configure.sh ia64 # VSI C configure run, about an hour (once per release)
+tools/vms_configure.sh ia64 # VSI C configure run, about an hour (once per release; the Alpha reuses the IA64 answers)
 tools/prepare.sh            # fetch + verify, patch, configure with the VSI C answers, MMS lists
-tools/build.sh ia64         # upload, then @[.VMS]BUILD on the node (MMS)
+tools/build.sh ia64         # upload, then @[.VMS]BUILD on the node (MMS); ia64, x86 or alpha (batch job)
 tools/test.sh ia64          # smoke test
 tools/kit.sh ia64           # PCSI kit -> out/kits/
 ```
@@ -109,7 +126,7 @@ tools/kit.sh ia64           # PCSI kit -> out/kits/
 
 1. patch's own test suite under GNV, as for grep and sed.
 2. Offer patches 0006, 0007 and 0009 to GNU patch, and the gnulib fixes to gnulib.
-3. A port to OpenVMS **Alpha**.
+3. ~~A port to OpenVMS **Alpha**.~~ Done: see Status (Alpha kit, patch level 2).
 
 The family of ports, all for IA64 and x86-64 (MariaDB: x86-64 only), each following its upstream releases:
 
